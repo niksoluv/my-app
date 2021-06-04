@@ -1,29 +1,42 @@
-import { NavLink } from 'react-router-dom'
+import React from 'react'
+import { sendMessageCreator, updateNewMessageBodyCreator } from '../../redux/dialogsReducer'
+import DialogItem from './DialogItem/DialogItem'
 import s from './Dialogs.module.css'
+import Message from './Message/Message'
 
 const Dialogs = (props) => {
+	let state = props.dialogsPage
+	const dialogsItems = state.dialogs.map((el) => {
+		return <DialogItem key={el.id.toString()} name={el.name} id={el.id} />
+	})
+	const messagesItems = state.messages.map((el) => {
+		return <Message key={el.id.toString()} message={el.message} />
+	})
+	const newMessageBody = state.newMessageBody
+
+	const onSendMessageClick = () => {
+		props.sendMessage()
+	}
+	const onNewMessageChange = (e) => {
+		let body = e.target.value
+		props.updateNewMessageBody(body)
+	}
+
 	return <div className={s.dialogs}>
 		<div className={s.dialogsItems}>
-			<div className={s.dialog + ' ' + s.active}>
-				<NavLink to='/dialogs/1'>Ya</NavLink>
-			</div>
-			<div className={s.dialog}>
-			<NavLink to='/dialogs/2'>Vitya</NavLink>
-			</div>
-			<div className={s.dialog}>
-				<NavLink to='/dialogs/3'>Andrey</NavLink>
-			</div>
-			<div className={s.dialog}>
-				<NavLink to='/dialogs/4'>Oleh</NavLink>
-			</div>
-			<div className={s.dialog}>
-				<NavLink to='/dialogs/5'>Ivan</NavLink>
-			</div>
+			{dialogsItems}
 		</div>
 		<div className={s.messages}>
-		<div className={s.message}>hii</div>
-		<div className={s.message}>hello</div>
-		<div className={s.message}>bye</div>
+			{messagesItems}
+		</div>
+		<div>
+			<textarea
+				placeholder='Message...'
+				value={newMessageBody}
+				onChange={onNewMessageChange}></textarea>
+		</div>
+		<div>
+			<button onClick={onSendMessageClick}>Send</button>
 		</div>
 	</div>
 }
